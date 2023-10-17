@@ -1,0 +1,20 @@
+{
+  "development": {
+    "username": "kirat",
+    "database": "financez",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "kirat",
+    "database": "financez",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "kirat",
+    "database": "financez",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
