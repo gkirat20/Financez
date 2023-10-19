@@ -1,15 +1,18 @@
-const Account = require('../models/account');
-const Transaction = require('../models/transaction');
-const UserProfile = require('../models/user_profile');
-const Role = require('../models/role');
-const AccountRole = require('../models/account_role');
-const DataListing = require('../models/data_listing');
-const Collaboration = require('../models/collaboration');
-const CollaborationMember = require('../models/collaboration_member');
-const Notification = require('../models/notification');
-const AuditLog = require('../models/audit_log');
-const DataInsight = require('../models/data_insight');
-const Feedback = require('../models/feedback');
+const { sequelize, DataTypes } = require('../models/index');
+
+const Account = require('../models/account')(sequelize, DataTypes);
+const Transaction = require('../models/transaction')(sequelize, DataTypes);
+const UserProfile = require('../models/user_profile')(sequelize, DataTypes);
+const Role = require('../models/role')(sequelize, DataTypes);
+const AccountRole = require('../models/account_role')(sequelize, DataTypes);
+const DataListing = require('../models/data_listing')(sequelize, DataTypes);
+const Collaboration = require('../models/collaboration')(sequelize, DataTypes);
+const CollaborationMember = require('../models/collaboration_member')(sequelize, DataTypes);
+const Notification = require('../models/notification')(sequelize, DataTypes);
+const AuditLog = require('../models/audit_log')(sequelize, DataTypes);
+const DataInsight = require('../models/data_insight')(sequelize, DataTypes);
+const Feedback = require('../models/feedback')(sequelize, DataTypes);
+
 
 // Relationship between Account and Transaction (One-to-Many)
 Account.hasMany(Transaction, {

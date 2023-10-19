@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const DataListing = sequelize.define('DataListing', {
+    const Transaction = sequelize.define('Transaction', {
       account_id: {
           type: DataTypes.INTEGER,
           references: {
@@ -7,24 +7,21 @@ module.exports = (sequelize, DataTypes) => {
               key: 'id'
           }
       },
-      title: {
-          type: DataTypes.STRING(255),
+      amount: {
+          type: DataTypes.DECIMAL(20,2),
           allowNull: false
       },
-      description: DataTypes.TEXT,
-      date_posted: {
+      transaction_date: {
           type: DataTypes.DATE,
           defaultValue: sequelize.NOW
       },
-      price: DataTypes.DECIMAL(20,2),
-      is_public: {
-          type: DataTypes.BOOLEAN,
-          defaultValue: false
+      description: {
+          type: DataTypes.TEXT
       }
     });
   
     // Add any association logic here
   
-    return DataListing;
+    return Transaction;
   };
   

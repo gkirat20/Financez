@@ -1,12 +1,14 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('./index');
-
-const Role = sequelize.define('Role', {
-    role_name: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        unique: true
-    }
-});
-
-module.exports = Role;
+module.exports = (sequelize, DataTypes) => {
+    const Role = sequelize.define('Role', {
+      role_name: {
+          type: DataTypes.STRING(50),
+          allowNull: false,
+          unique: true
+      }
+    });
+  
+    // Add any association logic here
+  
+    return Role;
+  };
+  
