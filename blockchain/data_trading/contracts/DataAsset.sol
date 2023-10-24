@@ -2,6 +2,9 @@ pragma solidity >=0.4.22 <0.7.0;
 
 contract DataAsset {
 
+    // Define a new role identifier for our app
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+
     // Struct to represent a data asset
     struct Data {
         string metadata;
@@ -11,6 +14,15 @@ contract DataAsset {
         bool isListed;
     }
 
+    // Add this at the beginning of your contract
+    struct Auction {
+        uint256 startPrice;
+        uint256 endTime;
+        address payable highestBidder;
+        uint256 highestBid;
+        bool active;
+    }
+
     // Mapping from data ID to Data struct
     mapping(uint256 => Data) public dataAssets;
     uint256 public dataCounter = 0;
@@ -18,13 +30,49 @@ contract DataAsset {
     // Mapping to track pending withdrawals
     mapping(address => uint256) public pendingWithdrawals;
 
+    mapping(uint256 => Auction) public dataAuctions;
+
     // Events
     event DataListed(uint256 indexed dataId, address indexed owner, uint256 price);
     event DataPurchased(uint256 indexed dataId, address indexed buyer, address indexed seller, uint256 price);
     event PriceUpdated(uint256 indexed dataId, uint256 newPrice);
     event ListingCancelled(uint256 indexed dataId);
     event OwnershipTransferred(uint256 indexed dataId, address indexed previousOwner, address indexed newOwner);
+    
+    event AuctionStarted(uint256 indexed dataId, uint256 startTime, uint256 endTime);
+    event NewBid(uint256 indexed dataId, address indexed bidder, uint256 amount);
 
+    function startAuction(uint256 _dataId, uint256 _startPrice, uint256 _duration) external {
+        require(dataAssets[_dataId].owner == msg.sender, "Only the owner can start the auction");
+        Auction memory newAuction = Auction(_startPrice, block.timestamp + _duration, address(0), 0, true);
+        dataAuctions[_dataId] = newAuction;
+        emit AuctionStarted(_dataId, block.timestamp, block.timestamp + _duration);
+    }
+
+    function bid(uint256 _dataId) external payable {
+        require(dataAuctions[_dataId].active, "Auction not active");
+        require(block.timestamp <= dataAuctions[_dataId].endTime, "Auction ended");
+        require(msg.value > dataAuctions[_dataId].highestBid, "Bid too low");
+
+        if (dataAuctions[_dataId].highestBidder != address(0)) {
+            pendingWithdrawals[dataAuctions[_dataId].highestBidder] += dataAuctions[_dataId].highestBid;  // Refund the previous highest bidder
+        }
+
+        dataAuctions[_dataId].highestBidder = msg.sender;
+        dataAuctions[_dataId].highestBid = msg.value;
+        emit NewBid(_dataId, msg.sender, msg.value);
+    }
+
+    function endAuction(uint256 _dataId) external {
+        require(block.timestamp > dataAuctions[_dataId].endTime, "Auction not yet ended");
+        require(dataAuctions[_dataId].active, "Auction already ended");
+
+        dataAuctions[_dataId].active = false;
+        pendingWithdrawals[dataAssets[_dataId].owner] += dataAuctions[_dataId].highestBid;  // Add funds to the owner's withdrawals
+
+        dataAssets[_dataId].owner = dataAuctions[_dataId].highestBidder;
+        emit OwnershipTransferred(_dataId, dataAssets[_dataId].owner, dataAuctions[_dataId].highestBidder);
+    }
     // List data for sale
     function listData(string calldata _metadata, uint256 _price) external {
         dataCounter++;
@@ -93,6 +141,7 @@ contract DataAsset {
         dataToTransfer.owner = _newOwner;
     }
 
+    
     
 
 
