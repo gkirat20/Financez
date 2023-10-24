@@ -142,8 +142,46 @@ contract("DataAsset", (accounts) => {
         assert.equal(data.owner, newOwner, "Ownership was not transferred.");
     });
     
+    it("should allow the owner to start an auction for a data asset", async () => {
+        const startPrice = web3.utils.toWei("0.5", "ether");
+        const duration = 3600;  // 1 hour in seconds
     
-  
+        const result = await instance.startAuction(1, startPrice, duration, { from: owner });
+    
+        assert.equal(result.logs[0].event, "AuctionStarted");
+        const auction = await instance.dataAuctions(1);
+        assert.equal(auction.startPrice, startPrice);
+        assert.equal(auction.active, true);
+    });
+    
+    it("should allow users to bid in the auction", async () => {
+        const startPrice = web3.utils.toWei("0.5", "ether");
+        const duration = 3600;  // 1 hour in seconds
+        await instance.startAuction(1, startPrice, duration, { from: owner });
+    
+        const bidAmount = web3.utils.toWei("1", "ether");
+        const result = await instance.bid(1, { from: buyer, value: bidAmount });
+    
+        assert.equal(result.logs[0].event, "NewBid");
+        const auction = await instance.dataAuctions(1);
+        assert.equal(auction.highestBidder, buyer);
+        assert.equal(auction.highestBid.toString(), bidAmount);
+    });
+    
+    it("should allow the owner to end the auction and transfer ownership", async () => {
+        const startPrice = web3.utils.toWei("0.5", "ether");
+        const shortDuration = 1;  // 1 second for testing
+        await instance.startAuction(1, startPrice, shortDuration, { from: owner });
+        
+        // Wait for 2 seconds to ensure the auction can be ended
+        await new Promise(resolve => setTimeout(resolve, 2000));
+    
+        const result = await instance.endAuction(1, { from: owner });
+        assert.equal(result.logs[0].event, "OwnershipTransferred");
+    
+        const auction = await instance.dataAuctions(1);
+        assert.equal(auction.active, false);
+    });
     
 
 });
