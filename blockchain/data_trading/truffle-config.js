@@ -5,6 +5,7 @@ const infuraKey = "a7b4fad1622c4be3891fe5dce5677e13";
 // Use process.env to access the environment variable
 const mnemonic = process.env.MNEMONIC;
 
+console.log('Mnemonic:', mnemonic);
 module.exports = {
   networks: {
     goerli: {
@@ -25,8 +26,8 @@ module.exports = {
         optimizer: {
           enabled: true, // Default: false
           runs: 200      // Default: 200
-        },
-      }
+        }, 
+      } 
     }
   }
 };
