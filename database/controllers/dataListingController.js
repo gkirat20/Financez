@@ -8,7 +8,7 @@ const {
     purchaseData,
     cancelListing,
     // Other functions as needed
-} = require('/Users/kirat/Desktop/Startup:project ideas/Financez/Financez/database/blockchain.js');
+} = require('/Users/kirat/Desktop/Startup_project_ideas/Financez/Financez/database/blockchain.js');
 
 async function createDataListing(listingData, fromAddress) {
     try {
