@@ -12,6 +12,7 @@ const Notification = require('../models/notification')(sequelize, DataTypes);
 const AuditLog = require('../models/audit_log')(sequelize, DataTypes);
 const DataInsight = require('../models/data_insight')(sequelize, DataTypes);
 const Feedback = require('../models/feedback')(sequelize, DataTypes);
+const Auction = require('../models/auction')(sequelize, DataTypes);
 
 
 // Relationship between Account and Transaction (One-to-Many)
@@ -108,6 +109,22 @@ Feedback.belongsTo(Account, {
     foreignKey: 'receiver_id'
 });
 
+// Relationship between Account and Auction (One-to-Many)
+Account.hasMany(Auction, {
+    foreignKey: 'account_id'
+});
+Auction.belongsTo(Account, {
+    foreignKey: 'account_id'
+});
+
+// Relationship between DataListing and Auction (One-to-One)
+DataListing.hasOne(Auction, {
+    foreignKey: 'data_listing_id'
+});
+Auction.belongsTo(DataListing, {
+    foreignKey: 'data_listing_id'
+});
+
 module.exports = {
     Account,
     Transaction,
@@ -120,5 +137,6 @@ module.exports = {
     Notification,
     AuditLog,
     DataInsight,
-    Feedback
+    Feedback,
+    Auction 
 };
