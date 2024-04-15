@@ -54,6 +54,6 @@ Please make sure to update tests as appropriate.
 
 ## License  
 
-Distributed under the Apache License 2.0
+Distributed under the MIT License
 
 For support, email gilltechco@hotmail.com or visit our support page.  
