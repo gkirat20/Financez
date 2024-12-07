@@ -15,7 +15,7 @@ Financez employs a robust tech stack and architecture designed for scalability, 
 
 Backend: Node.js, Django  
 Frontend: React, Vue.js  
-Database: PostgreSQL, MongoDB  
+Database: PostgreSQL  
 Blockchain: Ethereum, with Solidity for smart contracts  
 AI Integration: Python with libraries like Pandas, NumPy, TensorFlow, and PyTorch  
 For a detailed overview of our architecture, please refer to FinanceHub Architecture Plan.  
